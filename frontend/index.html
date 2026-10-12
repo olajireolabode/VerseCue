@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0a0f">
+  <title>VerseCue — Get Your Verses Right on Cue</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="dashboard">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="VerseCue home">
+        <div class="vc-logo" aria-hidden="true">VC</div>
+        <div class="brand-copy">
+          <h1>VerseCue</h1>
+          <p>Get your verses right on cue.</p>
+        </div>
+      </a>
+
+      <div class="topbar-actions">
+        <div class="status-pill">
+          <span id="backend-status-dot" class="status-dot" aria-hidden="true"></span>
+          <span id="backend-status-text">Checking backend…</span>
+        </div>
+        <div class="status-pill">
+          <span id="listener-status-dot" class="status-dot" aria-hidden="true"></span>
+          <span id="listener-status-text">Checking listener…</span>
+        </div>
+        <label class="translation-control">
+          <span class="sr-only">Bible translation</span>
+          <select id="translation-select" aria-label="Bible translation">
+            <option value="63097d2a0a2f7db3-01">NKJV</option>
+          </select>
+        </label>
+      </div>
+    </header>
+
+    <section class="control-row" aria-label="Recording and Bible search">
+      <article class="panel record-panel">
+        <div class="panel-title">
+          <span class="section-icon" aria-hidden="true">◉</span>
+          <div>
+            <h2>Hold to Record</h2>
+            <p>Capture audio and find Bible references.</p>
+          </div>
+        </div>
+        <div class="record-controls">
+          <button id="hold-record-button" class="record-button" type="button"
+            aria-pressed="false" aria-describedby="recording-message">
+            <span class="record-indicator" aria-hidden="true"></span>
+            <span id="record-button-label">Hold to Record</span>
+          </button>
+          <div id="recording-timer" class="timer" aria-live="off">00:00</div>
+          <p id="recording-status" class="subtle">Ready to record</p>
+          <p id="recording-message" class="status-message" role="status" aria-live="polite">
+            Press and hold to record. Release to process the audio.
+          </p>
+          <p class="keyboard-hint">Hold the button to record</p>
+        </div>
+      </article>
+
+      <article class="panel search-panel">
+        <div class="panel-title">
+          <span class="section-icon" aria-hidden="true">⌕</span>
+          <div>
+            <h2>Search by Reference</h2>
+            <p>Enter a book, chapter, and verse.</p>
+          </div>
+        </div>
+        <form id="scripture-search-form" class="stack-form">
+          <label class="sr-only" for="scripture-search-input">Bible reference</label>
+          <div class="input-wrap">
+            <span class="input-icon" aria-hidden="true">⌕</span>
+            <input id="scripture-search-input" type="text"
+              placeholder="e.g. John 3:16" autocomplete="off">
+          </div>
+          <button id="scripture-search-button" class="button primary" type="submit">
+            Search <span aria-hidden="true">→</span>
+          </button>
+        </form>
+        <p id="scripture-search-status" class="status-message" role="status" aria-live="polite"></p>
+      </article>
+
+      <article class="panel search-panel">
+        <div class="panel-title">
+          <span class="section-icon" aria-hidden="true">⌕</span>
+          <div>
+            <h2>Search by Words</h2>
+            <p>Remember the words, not the reference?</p>
+          </div>
+        </div>
+        <form id="context-search-form" class="stack-form">
+          <label class="sr-only" for="context-search-input">Search Bible text</label>
+          <div class="input-wrap">
+            <span class="input-icon" aria-hidden="true">⌕</span>
+            <input id="context-search-input" type="text"
+              placeholder="e.g. weeping may endure" autocomplete="off">
+          </div>
+          <button id="context-search-button" class="button primary" type="submit">
+            Find Passage <span aria-hidden="true">→</span>
+          </button>
+        </form>
+        <p id="context-search-status" class="status-message" role="status" aria-live="polite"></p>
+      </article>
+    </section>
+
+    <section class="stats-strip" aria-label="Detection statistics">
+      <article class="metric-card">
+        <span class="metric-icon" aria-hidden="true">▤</span>
+        <span class="metric-label">Total detections</span>
+        <strong id="total-count">0</strong>
+      </article>
+      <article class="metric-card">
+        <span class="metric-icon" aria-hidden="true">◷</span>
+        <span class="metric-label">Latest reference</span>
+        <strong id="latest-reference">—</strong>
+      </article>
+      <article class="metric-card">
+        <span class="metric-icon" aria-hidden="true">↻</span>
+        <span class="metric-label">Last updated</span>
+        <strong id="last-updated">—</strong>
+      </article>
+    </section>
+
+    <section class="workspace-grid" aria-label="VerseCue workspace">
+      <article class="panel history-panel">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <span class="section-icon" aria-hidden="true">◷</span>
+            <div>
+              <h2>Detection History</h2>
+              <p>Your recent references.</p>
+            </div>
+          </div>
+          <button id="refresh-button" class="button secondary" type="button">
+            ↻ Refresh
+          </button>
+        </div>
+        <div id="history-list" class="history-list" aria-live="polite">
+          <p class="empty-state">Loading detection history…</p>
+        </div>
+      </article>
+
+      <article class="panel suggestions-panel">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <span class="section-icon accent-green" aria-hidden="true">≋</span>
+            <div>
+              <h2>Live Transcript &amp; Suggestions</h2>
+              <p>Review possible references before selecting.</p>
+            </div>
+          </div>
+        </div>
+        <div class="transcript-box">
+          <h3>Transcript</h3>
+          <p id="recording-transcript" aria-live="polite">
+            Your transcript will appear here after recording.
+          </p>
+        </div>
+        <div class="suggestions-heading">
+          <span class="section-icon" aria-hidden="true">✧</span>
+          <div>
+            <h3>Verse Suggestions</h3>
+            <p>Confirm a suggestion before projection.</p>
+          </div>
+        </div>
+        <div id="live-suggestions-list" class="suggestions-list" aria-live="polite">
+          <p class="empty-state">No suggestions yet. Hold the mic button to begin.</p>
+        </div>
+        <div id="context-search-results" class="context-results"></div>
+      </article>
+
+      <article class="panel preview-panel">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <span class="section-icon" aria-hidden="true">▤</span>
+            <div>
+              <h2>Verse Preview</h2>
+              <p>Review the passage before projection.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-card">
+          <div class="preview-card-heading">
+            <h2 id="preview-reference">Select a verse</h2>
+            <span class="preview-version" id="translation-status">NKJV</span>
+          </div>
+          <p id="preview-text" class="preview-text">
+            Choose a detected reference, search for a passage, or preview a suggestion to see the verse here.
+          </p>
+        </div>
+
+        <p id="selection-message" class="status-message" role="status" aria-live="polite"></p>
+
+        <div class="projection-actions">
+          <button id="select-button" class="button primary project-button"
+            type="button" disabled>
+            <span aria-hidden="true">▣</span> Send to Projector
+          </button>
+          <button id="clear-button" class="button secondary clear-button" type="button">
+            Clear
+          </button>
+        </div>
+
+        <p id="error-message" class="error-message" role="alert" hidden></p>
+      </article>
+    </section>
+
+    <footer class="footer">
+      <span>VERSECUE <span aria-hidden="true">·</span> CHURCH PRESENTATION ASSISTANT</span>
+      <span>Get your verses right on cue.</span>
+    </footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

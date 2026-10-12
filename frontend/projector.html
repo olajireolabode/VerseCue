@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VerseCue | Projection</title>
+    <link rel="stylesheet" href="projector.css">
+</head>
+<body>
+    <main class="projection-screen">
+        <div class="brand" aria-label="VerseCue">VC</div>
+
+        <section id="waiting-screen" class="waiting-screen">
+            <p>Waiting for the next Bible verse</p>
+        </section>
+
+        <section id="verse-screen" class="verse-screen" hidden>
+            <p id="verse-reference" class="verse-reference"></p>
+            <div id="verse-translation" class="verse-translation"></div>
+            <p id="verse-text" class="verse-text"></p>
+        </section>
+
+        <footer>VerseCue to the rescue, get your verses right on cue.</footer>
+    </main>
+
+    <script src="projector.js"></script>
+</body>
+</html>
