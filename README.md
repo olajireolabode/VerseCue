@@ -89,7 +89,11 @@ The project has two main parts: the **backend**, which handles the processing, a
 | `main.py` | Runs the FastAPI backend and provides the routes the frontend uses. |
 | `verse_detector.py` | Looks for Bible references in recognized speech. |
 | `bible_api.py` | Handles requests to retrieve Bible passages from the Bible API. |
-| `listener.py` | Supports the earlier microphone-listening workflow, if included in the current project. |
+| `verse_service.py` | Runs Whisper on uploaded audio and passes the transcript to the detector. |
+| `bible_reference.py` | Maps Bible book names to the API's book IDs. |
+| `parser.py` | Parses written references such as "John 3:16" into book, chapter and verse. |
+| `listener.py` | Optional continuous-listening mode that posts detections to the backend. |
+| `mic.py` | Small helper for recording audio from a microphone. |
 | `requirements.txt` | Lists the Python packages needed to run the backend. |
 | `.env` | Stores private settings such as the Bible API key. This file must not be uploaded to GitHub. |
 | `.env.example` | Shows which settings are needed without containing real secret keys. |
@@ -111,8 +115,6 @@ The project has two main parts: the **backend**, which handles the processing, a
 |---|---|
 | `.gitignore` | Tells Git which files should not be uploaded, such as private settings and Python's virtual environment. |
 | `README.md` | Explains the project and how to install and run it. |
-
-*Note: This file list is based on the project components identified during development. Check the actual folders before publishing so the names match the files in your final repository.*
 
 ## What I Learned
 
@@ -139,7 +141,46 @@ I also learned that recognizing speech is not the same as understanding it perfe
 
 ## Running VerseCue
 
-See the installation instructions below before running the project. You will need Python, FFmpeg, the project's Python packages, and a valid Bible API configuration.
+### Requirements
+
+- Python 3.10 or newer
+- [FFmpeg](https://ffmpeg.org/download.html) (Whisper needs it to read audio)
+- A free API key from [API.Bible](https://scripture.api.bible/)
+
+### 1. Install the backend
+
+```bash
+git clone https://github.com/olajireolabode/VerseCue.git
+cd VerseCue/backend
+python -m venv .venv
+# Windows: .venv\Scripts\activate    macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 2. Add your API key
+
+Copy `.env.example` to `.env` and put your API.Bible key in it:
+
+```
+BIBLE_API_KEY=your_api_key_here
+```
+
+### 3. Start the backend
+
+```bash
+uvicorn main:app --reload
+```
+
+The API runs at `http://127.0.0.1:8000`. Interactive docs are at `http://127.0.0.1:8000/docs`.
+
+### 4. Open the dashboard
+
+Serve the `frontend/` folder on port 5500 (for example with the VS Code Live Server extension), then open:
+
+- `index.html` for the operator dashboard
+- `projector.html` on the projector screen
+
+The first transcription downloads the Whisper model, so it takes longer than later ones.
 
 ## Acknowledgements
 
